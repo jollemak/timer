@@ -2,4 +2,4 @@
 
 Just a simple timer application built with React+TailwindCSS.   
 
-![timer](./public/timer.png)
+<img src="./public/timer.png" alt="Timer Screenshot" />
