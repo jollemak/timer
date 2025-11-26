@@ -1,135 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useTimer } from "./hooks";
 
 export default function App() {
-  const [time, setTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [targetTime, setTargetTime] = useState(0);
-  const [inputMinutes, setInputMinutes] = useState("");
-  const [inputSeconds, setInputSeconds] = useState("");
-  const [mode, setMode] = useState("stopwatch"); // "stopwatch" or "countdown"
-  const intervalRef = useRef(null);
-  const audioRef = useRef(null);
-
-  useEffect(() => {
-    // Create audio context for alarm sound
-    if (!audioRef.current) {
-      audioRef.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs6qdWFApDnt/wvG0gBTKI0vLSfzQGHm++7+OYUQ8NS6nk7K5aFg1Mn+Lzu3AeBjiS2PDBdygFKXvJ8NuVRAsTYLfs=');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isRunning) {
-      intervalRef.current = setInterval(() => {
-        setTime((prevTime) => {
-          const newTime = mode === "stopwatch" ? prevTime + 10 : prevTime - 10;
-          
-          // Check if countdown has reached zero
-          if (mode === "countdown" && newTime <= 0) {
-            setIsRunning(false);
-            playAlarm();
-            showNotification();
-            return 0;
-          }
-          
-          return newTime;
-        });
-      }, 10);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isRunning, mode]);
-
-  const playAlarm = () => {
-    if (audioRef.current) {
-      audioRef.current.loop = true;
-      audioRef.current.play().catch(err => console.log("Audio play failed:", err));
-      
-      // Stop alarm after 10 seconds
-      setTimeout(() => {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-          audioRef.current.loop = false;
-        }
-      }, 10000);
-    }
-  };
-
-  const showNotification = () => {
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        new Notification("Timer Finished!", {
-          body: "Your countdown timer has reached zero!",
-          icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>⏰</text></svg>"
-        });
-      } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            new Notification("Timer Finished!", {
-              body: "Your countdown timer has reached zero!",
-              icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>⏰</text></svg>"
-            });
-          }
-        });
-      }
-    }
-  };
-
-  const formatTime = (milliseconds) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    const ms = Math.floor((milliseconds % 1000) / 10);
-
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(ms).padStart(2, "0")}`;
-  };
-
-  const handleStartStop = () => {
-    if (!isRunning && mode === "countdown" && time === 0) {
-      // Starting countdown - set time from input
-      const totalMs = (parseInt(inputMinutes || 0) * 60 + parseInt(inputSeconds || 0)) * 1000;
-      if (totalMs > 0) {
-        setTime(totalMs);
-        setTargetTime(totalMs);
-        setIsRunning(true);
-        
-        // Request notification permission when starting countdown
-        if ("Notification" in window && Notification.permission === "default") {
-          Notification.requestPermission();
-        }
-      }
-    } else {
-      setIsRunning(!isRunning);
-    }
-  };
-
-  const handleReset = () => {
-    setIsRunning(false);
-    setTime(0);
-    setTargetTime(0);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current.loop = false;
-    }
-  };
-
-  const switchMode = (newMode) => {
-    setMode(newMode);
-    setIsRunning(false);
-    setTime(0);
-    setTargetTime(0);
-    setInputMinutes("");
-    setInputSeconds("");
-  };
+  const {
+    time,
+    isRunning,
+    mode,
+    inputMinutes,
+    inputSeconds,
+    setInputMinutes,
+    setInputSeconds,
+    handleStartStop,
+    handleReset,
+    switchMode,
+    formatTime,
+  } = useTimer();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 to-gray-900">
