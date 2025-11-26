@@ -132,7 +132,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center bg-linear-to-br from-gray-900 to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 to-gray-900">
       <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-12 shadow-2xl border border-white/20 mt-5">
         <div className="flex gap-4 justify-center mb-8">
           <button
